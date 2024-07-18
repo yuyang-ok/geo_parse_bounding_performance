@@ -10,14 +10,13 @@ fn main() {
     let f = std::fs::File::open(&Path::new(DATA_FILE)).unwrap();
     let data: Data = bson::from_reader(f).unwrap();
 
-    let now = std::time::Instant::now();
     let count = 200;
     let geoms = data
         .data
         .iter()
         .map(|x| geometry_from_ewkb(x.as_slice()))
         .collect::<Vec<_>>();
-
+    let now = std::time::Instant::now();
     for _ in 0..count {
         for g in data.data.iter() {
             let g = geometry_from_ewkb(g.as_slice());
