@@ -12,6 +12,11 @@ fn main() {
 
     let now = std::time::Instant::now();
     let count = 200;
+    let geoms = data
+        .data
+        .iter()
+        .map(|x| geometry_from_ewkb(x.as_slice()))
+        .collect::<Vec<_>>();
 
     for _ in 0..count {
         for g in data.data.iter() {
@@ -20,7 +25,18 @@ fn main() {
         }
     }
     println!(
-        "{:?}s total run:{}",
+        "parse geometry and bounding_rect {:?}s total run:{}",
+        now.elapsed().as_secs(),
+        data.data.len() * count
+    );
+    let now = std::time::Instant::now();
+    for _ in 0..count {
+        for g in geoms.iter() {
+            let _b = g.bounding_rect();
+        }
+    }
+    println!(
+        "bounding_rect {:?}s total run:{}",
         now.elapsed().as_secs(),
         data.data.len() * count
     );
